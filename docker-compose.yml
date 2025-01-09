@@ -1,0 +1,95 @@
+version: '3.9'
+
+services:
+  news:
+    image: node:20 # Use a Node.js 18 image as the base
+    container_name: news24
+    working_dir: /usr/src/app
+    ports:
+      - "3010:3000" # Map Next.js development server port
+    volumes:
+      - ./frontend/:/usr/src/app # Mount the project directory
+      - /usr/src/app/node_modules # Prevent node_modules overwrite
+    environment:
+      NODE_ENV: development
+    command: sh -c "npm install && npm run dev"
+    depends_on:
+      - admin
+  
+  admin:
+    build:
+      context: ./admin/docker/8.3/
+      dockerfile: Dockerfile
+    container_name: news24_admin
+    ports:
+      - "8010:80"
+    volumes:
+      - ./admin/:/var/www/html
+    working_dir: /var/www/html/
+    command: bash -c "composer update && php-fpm"
+    depends_on:
+      - news_db
+  
+  epaper:
+    build:
+      context: ./epaper/docker/
+      dockerfile: Dockerfile
+    container_name: news24_epaper
+    ports:
+      - "8020:80"
+    volumes:
+      - ./epaper/:/var/www/html
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html
+    working_dir: /var/www/html/
+    #command: bash -c "php ./project/composer.phar update"
+    command: apache2-foreground
+    depends_on:
+      - epaper_db
+
+  news_db:
+    image: mysql:8.0
+    container_name: news24_db
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: droid273
+      MYSQL_DATABASE: newsadmin
+      MYSQL_USER: newsadmin
+      MYSQL_PASSWORD: droid273
+    volumes:
+      - news_dbdata:/var/lib/mysql
+      - ./admin/:/docker-entrypoint-initdb.d
+  
+  epaper_db:
+    image: mysql:5.7
+    container_name: news24_epaper_db
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: droid273
+      MYSQL_DATABASE: mrnetdoptor_epaper2
+      MYSQL_USER: mrnetdoptor_epaper2
+      MYSQL_PASSWORD: droid273
+    volumes:
+      - epaper_dbdata:/var/lib/mysql
+      - ./epaper/:/docker-entrypoint-initdb.d
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: epaper_db, epaper_db
+      MYSQL_ROOT_PASSWORD: droid273
+    depends_on:
+      - epaper_db
+      - news_db
+  
+
+volumes:
+  - epaper_dbdata:/var/lib/mysql
+  - news_dbdata:/var/lib/mysql
+
