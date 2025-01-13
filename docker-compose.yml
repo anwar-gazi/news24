@@ -74,7 +74,6 @@ services:
     working_dir: /usr/src/app
     volumes:
       - ./frontend/:/usr/src/app
-      - /usr/src/app/node_modules
     environment:
       NODE_ENV: development
     command: sh -c "npm run dev -- -p 3000 --hostname news"
@@ -91,7 +90,8 @@ services:
     volumes:
       - ./admin/:/var/www/html/
     working_dir: /var/www/html/
-    command: bash -c "composer install --no-dev --optimize-autoloader && chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache && php-fpm"
+    #command: bash -c "composer install --no-dev --optimize-autoloader && chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache && php-fpm"
+    command: "php-fpm"
     depends_on:
       - mysql80
   
