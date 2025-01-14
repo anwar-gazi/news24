@@ -10,6 +10,8 @@ services:
     container_name: news24_epaper_db
     networks:
       - news24
+    ports:
+      - "3307:3306" #epaper
     environment:
       MYSQL_ROOT_PASSWORD: droid273
       MYSQL_DATABASE: epaper
@@ -106,6 +108,8 @@ services:
       - ./epaper/:/var/www/html
     environment:
       - APACHE_DOCUMENT_ROOT=/var/www/html
+      - DB_HOST=mysql57
+      - DB_PORT=3306
     working_dir: /var/www/html/
     #command: bash -c "php ./project/composer.phar update"
     command: apache2-foreground
