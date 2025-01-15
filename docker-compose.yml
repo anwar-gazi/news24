@@ -18,7 +18,7 @@ services:
       MYSQL_USER: news
       MYSQL_PASSWORD: droid273
     volumes:
-      - /home/anwar/.docker/news24/epaper_mysql57:/var/lib/mysql
+      - /home/${USER}/.docker/news24/epaper_mysql57:/var/lib/mysql
       - ./epaper/:/docker-entrypoint-initdb.d
   
   mysql80:
@@ -33,7 +33,7 @@ services:
       MYSQL_USER: news
       MYSQL_PASSWORD: droid273
     volumes:
-      - /home/anwar/.docker/news24/epaper_mysql80:/var/lib/mysql
+      - /home/${USER}/.docker/news24/epaper_mysql80:/var/lib/mysql
       - ./admin/database/:/docker-entrypoint-initdb.d
 
   phpmyadmin:
@@ -55,12 +55,11 @@ services:
     networks:
       - news24
     ports:
-      - "0.0.0.0:80:80" #epaper
-      - "0.0.0.0:81:81" #news
-      - "0.0.0.0:8000:8000" #admin
-      - "0.0.0.0:3300:3300" #pma
+      - "80:80" #epaper
+      - "81:81" #news
+      - "8000:8000" #admin
+      - "3300:3300" #pma
     volumes:
-      - /home/anwar/.docker/news24/var_log_nginx/:/var/log/nginx/
       - ./admin/:/var/www/html/admin/
       - ./nginx/conf.d:/etc/nginx/conf.d
     depends_on:
