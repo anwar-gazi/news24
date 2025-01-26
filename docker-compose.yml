@@ -27,7 +27,7 @@ services:
     networks:
       - news24
     ports:
-      - "3306:3306"
+      - "3308:3306"
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: droid273
@@ -35,7 +35,7 @@ services:
       MYSQL_USER: news
       MYSQL_PASSWORD: droid273
     volumes:
-      - /home/${USER}/.docker/news24/epaper_mysql80:/var/lib/mysql
+      - /home/${USER}/.docker/news24/mysql80:/var/lib/mysql
       - ./admin/database/:/docker-entrypoint-initdb.d
 
   phpmyadmin:
@@ -59,7 +59,7 @@ services:
     ports:
       - "80:80" #epaper
       - "81:81" #news
-      - "8000:8000" #admin
+      - "8010:8000" #admin
       - "3300:3300" #pma
     volumes:
       - ./admin/:/var/www/html/admin/

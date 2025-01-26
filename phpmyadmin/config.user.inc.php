@@ -12,3 +12,9 @@ $i++;
 $cfg['Servers'][$i]['host'] = 'mysql57';
 $cfg['Servers'][$i]['port'] = '3306';
 $cfg['Servers'][$i]['auth_type'] = 'cookie';
+
+// system mysql
+$i++;
+$cfg['Servers'][$i]['host'] = 'localhost';
+$cfg['Servers'][$i]['port'] = '3306';
+$cfg['Servers'][$i]['auth_type'] = 'cookie';
